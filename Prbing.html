@@ -1,0 +1,424 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shs Ts Probin 1.0</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1.5rem;
+        }
+        .container {
+            max-width: 700px; /* Adjusted to be wider */
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 2rem; /* Adjusted for more pronounced rounded corners */
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            padding: 3rem;
+            text-align: center;
+        }
+        .button-gradient {
+            background-image: linear-gradient(to right, #6b46c1, #805ad5);
+        }
+        .button-gradient:hover {
+            background-image: linear-gradient(to right, #5a32a6, #6b46c1);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-8">
+
+    <div class="container mx-auto p-6 sm:p-8 md:p-12 bg-white rounded-3xl shadow-2xl">
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-800 mb-6">SHS TS PROBING 101</h1>
+                <div id="content" class="min-h-[250px] flex flex-col justify-center items-center">
+            <!-- Dynamic content will be loaded here -->
+        </div>
+
+        <div class="mt-12 pt-6 border-t border-gray-200 text-gray-500 flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+            <button id="back-button" class="px-8 py-3 button-gradient text-white font-bold rounded-full hover:shadow-lg transition-all transform hover:scale-105 hidden">
+                Back
+            </button>
+            <button id="home-button" class="px-8 py-3 button-gradient text-white font-bold rounded-full hover:shadow-lg transition-all transform hover:scale-105 hidden">
+                Home
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const products = [
+            { id: 'camera', name: 'Cameras', subProducts: [
+                { id: 'camera-indoor', name: 'Indoor Camera', symptoms: [
+                    { name: 'Wi-Fi Related', questions: [
+                        "Is the internet working on other devices in the home?",
+                        "Is the router currently powered on?",
+                        "Has the router or booster been rebooted recently (manually or by a power outage)?",
+                        "Was there any recent changes to your Wi-Fi settings or password?",
+                        "If a booster is used, is the main booster still connected to the router via an Ethernet cable?",
+                        "Are there any other non-Telus signal extenders or repeaters in the home? (if no boosters are showing on InsightC)"
+                    ]},
+                    { name: 'Power Related', questions: [
+                        "Did you have any power outages?",
+                        "Do you see an LED light on the camera?",
+                        "Have you tried a reboot?",
+                        "Is the power cord or power adapter damaged in any way?",
+                        "Is the power adapter securely plugged into the camera and the wall?",
+                        "Is the outlet working for other devices?"
+                    ]},
+                    { name: "General / Don't Know", questions: [
+                        "Can you describe the problem you are having?",
+                        "Is the camera working on your application?",
+                        "Has this happened before?",
+                        "When was the last time the camera worked?",
+                        "What color is the LED light on the camera, if any?",
+                        "Have you attempted to physically reset the camera by any chance?"
+                    ]}
+                ]},
+                { id: 'camera-outdoor', name: 'Outdoor Camera', symptoms: [
+                    { name: 'Wi-Fi Related', questions: [
+                        "Is the internet working on other devices in the home?",
+                        "Is the router currently powered on?",
+                        "Has the router or booster been rebooted recently (manually or by a power outage)?",
+                        "Have there been any recent changes to your Wi-Fi settings or password?",
+                        "If a booster is used, is the main booster still connected to the router via an Ethernet cable?",
+                        "If a secondary booster is used, is it currently powered on? whats the led status?",
+                        "Are there any other non-Telus signal extenders or repeaters in the home? (if no boosters are showing on InsightC)",
+                        "What is the distance between the router and the camera?"
+                    ]},
+                    { name: 'Power Related', questions: [
+                        "Did you have any power outages?",
+                        "Do you see an LED light on the camera?",
+                        "Have you tried a reboot?",
+                        "Is the power adapter securely plugged into the camera and the wall?",
+                        "Is the outlet working for other devices?",
+                        "Is the extender cord still plugged into the camera's main adapter?",
+                        "Is the power cord or power adapter damaged in any way?"
+                    ]},
+                    { name: "General / Don't Know", questions: [
+                        "Has this happened before?",
+                        "Can you describe the camera's symptoms?",
+                        "When was the last time the camera worked?",
+                        "What is the weather like where the camera is located?",
+                        "Have you attempted to physically reset the camera by any chance?"
+                    ]}
+                ]}
+            ]},
+            { id: 'doorbell', name: 'Doorbell', subProducts: [
+                { id: 'doorbell-adc-v750', name: 'ADC V750', symptoms: [
+                    { name: 'Connectivity Issues', questions: [
+                        "Is the internet working on other devices in your home?",
+                        "Is the router currently powered on?",
+                        "Has the router or any Wi-Fi boosters been rebooted recently (manually or by a power outage)?",
+                        "Have there been any recent changes to your Wi-Fi settings or password?",
+                        "If a booster is used, is the main booster still connected to the router via an Ethernet cable?",
+                        "If a secondary booster is used, is it currently powered on? whats the led status?",
+                        "Are there any other non-Telus signal extenders or repeaters in the home? (if no boosters are showing on InsightC)",
+                        "Does the doorbell appear online in the Telus app?"
+                    ]},
+                    { name: 'Power Issues', questions: [
+                        "Is the doorbell button lighting up?",
+                        "Have you tried rebooting the doorbell from the breaker?",
+                        "Have you had any recent power outages or electrical flickers?"
+                    ]}
+                ]},
+                { id: 'doorbell-skybell-105', name: 'Skybell 105', symptoms: [
+                    { name: 'Connectivity Issues', questions: [
+                        "Is the internet working on other devices in your home?",
+                        "Is the router currently powered on?",
+                        "Has the router or any Wi-Fi boosters been rebooted recently (manually or by a power outage)?",
+                        "Have there been any recent changes to your Wi-Fi settings or password?",
+                        "If a booster is used, is the main booster still connected to the router via an Ethernet cable?",
+                        "If a secondary booster is used, is it currently powered on? whats the led status?",
+                        "Are there any other non-Telus signal extenders or repeaters in the home? (if no boosters are showing on InsightC)",
+                        "Does the doorbell appear online in the Telus app?"
+                    ]},
+                    { name: 'Power Issues', questions: [
+                        "Is the LED light on the doorbell solid, blinking, or off?",
+                        "Have you checked the transformer for any issues?",
+                        "Have you recently had a power outage or any electrical work done?"
+                    ]},
+                    { name: "General / Don't Know", questions: [
+                        "When was the doorbell last working correctly?",
+                        "Can you describe what the doorbell is doing right now?",
+                        "Has this issue occurred before?",
+                        "Have you attempted to physically reset the doorbell?",
+                        "What is the weather like where the doorbell is located?"
+                    ]}
+                ]}
+            ]},
+            { id: 'sensors', name: 'Sensors', subProducts: [
+                { id: 'sensors-door', name: 'Door Sensor', symptoms: [
+                    { name: 'Battery / Power Related', questions: [
+                        "Can you describe the exact symptoms?",
+                        "When was the last time you replaced the batteries?",
+                        "Is the battery installed correctly?",
+                        "Do you have any other spare battery to try?"
+                    ]},
+                    { name: 'Connectivity Related', questions: [
+                        "Is the sensor mounted correctly on the door and frame?",
+                        "Are there any other devices interfering with the signal?",
+                        "Is the sensor too far from the Telus Smart Hub?"
+                    ]},
+                    { name: "General / Don't Know", questions: [
+                        "Can you describe the exact symptoms?",
+                        "Is this the first time you've had this issue?",
+                        "When was the last time the sensor worked properly?"
+                    ]}
+                ]},
+                { id: 'sensors-motion', name: 'Motion Sensor', symptoms: [
+                    { name: 'General', questions: [
+                        "What is the sensor's current location?",
+                        "Is the sensor's LED light blinking?",
+                        "Are there any pets in the home that could be triggering it?",
+                        "How far from the sensor are you when it detects motion?",
+                        "Have you recently replaced the battery?"
+                    ]}
+                ]},
+                { id: 'sensors-glass', name: 'Glass Break Sensor', symptoms: [
+                    { name: 'General', questions: [
+                        "When did the last known glass break incident happen?",
+                        "Was the system armed at the time?",
+                        "Is the sensor mounted on a wall?",
+                        "Is the LED light on the sensor on or off?",
+                        "Have you checked the battery level in the Telus app?"
+                    ]}
+                ]},
+                { id: 'sensors-smoke', name: 'Smoke Detector', symptoms: [
+                    { name: 'False Alarms', questions: [
+                        "Was there any construction or recent renovations taking place in the area around the smoke detector?",
+                        "Is the detector located near a kitchen, bathroom, or any other area where there might be steam, smoke from cooking, or high humidity?",
+                        "Can you tell me about the detector's location? Is it near a window or vent where there might be a strong draft or sudden temperature changes?",
+                        "When was the last time the smoke detector was cleaned or maintained?",
+                        "Are there any other electronic devices or appliances nearby that could be causing electrical interference?",
+                        "Were there any brief power outages or electrical flickers around the time of the alarm?",
+                        "Was the alarm triggered during the day or night?",
+                        "Can you countdown how many second between each beep?"
+                    ]},
+                    { name: 'General', questions: [
+                        "What is the LED light status?",
+                        "Do you hear any chirping sound?",
+                        "Is the unit still installed on the ceiling?",
+                        "Have you recently replaced the batteries?"
+                    ]}
+                ]},
+                { id: 'co-detector', name: 'Carbon Monoxide Detector', symptoms: [
+                    { name: 'False Alarms', questions: [
+                        "Is the detector located near a kitchen or garage?",
+                        "Has the detector been exposed to strong cleaning chemicals or paint fumes?",
+                        "Are there any brief power outages or electrical flickers around the time of the alarm?",
+                        "Could you describe the sound of the alarm? Was it a steady tone or an intermittent chirp?",
+                        "When was the last time the battery was replaced?"
+                    ]},
+                    { name: 'General', questions: [
+                        "What is the LED light status?",
+                        "Is there any odor of exhaust fumes or anything else?",
+                        "Are you able to test the detector?",
+                        "When was the last time you replaced the battery?"
+                    ]}
+                ]},
+                { id: 'flood-sensor', name: 'Flood Sensor', symptoms: [
+                    { name: 'General Troubles', questions: [
+                        "Can you describe the location of the flood sensor?",
+                        "Is the sensor currently wet or in contact with water?",
+                        "When was the last time you tested the sensor?",
+                        "Is the sensor's LED light on or off?",
+                        "Have you checked the battery level in the Telus app?"
+                    ]}
+                ]}
+            ]},
+            { id: 'thermostat', name: 'Smart Thermostat T2000', symptoms: [
+                { name: 'General', questions: [
+                    "What temperature is currently displayed on the thermostat?",
+                    "Is the thermostat connected to Wi‑Fi and showing as online in the app?",
+                    "When you adjust the temperature, does the HVAC system respond?",
+                    "Is the thermostat set to the correct mode (heat, cool, or auto)?",
+                    "Have you recently changed the schedule or settings?",
+                    "Are there any error codes or unusual icons on the display?",
+                    "Have you tried restarting or power‑cycling the thermostat?",
+                    "Is the HVAC breaker switched on?",
+                    "Has there been a recent power outage or electrical work?",
+                    "Is the thermostat in direct sunlight or near a heat source?",
+                    "If battery‑powered, have the batteries been checked or replaced?"
+                ]}
+            ]},
+            { id: 'smart-lock', name: 'Kwikset Doorlock', symptoms: [
+                { name: 'General', questions: [
+                    "When you try to lock or unlock, does the mechanism move at all?",
+                    "When you try to lock or unlock, does the mechanism move at all?",
+                    "When you try to lock or unlock, does the mechanism move at all?",
+                    "When you try to lock or unlock, does the mechanism move at all?",
+                    "When you try to lock or unlock, does the mechanism move at all?",
+                    "Has the lock been exposed to extreme weather recently?",
+                    "Is the lock showing as online in the app?",
+                    
+                ]}
+            ]},
+            { id: 'garage-controller', name: 'Garage Door Control', symptoms: [
+                { name: 'General', questions: [
+                    "Is the garage door opener plugged in and powered?",
+                    "Does the controller’s LED light turn on?",
+                    "Can the door be opened with the wall button?",
+                    "Can the door be opened with the handheld remote?",
+                    "Are there any obstructions in the door’s path?",
+                    "Do the safety sensors have a clear line of sight and show a solid light?",
+                    "Has there been a recent power outage?",
+                    "Is the controller showing as online in the app?",
+                    "Have you tried rebooting the controller?",
+                    "Have you tried rebooting the controller?"
+
+
+                ]}
+            ]}
+        ];
+
+        const contentDiv = document.getElementById('content');
+        const backButton = document.getElementById('back-button');
+        const homeButton = document.getElementById('home-button');
+        let navigationHistory = [];
+
+        function renderProductCategories() {
+            contentDiv.innerHTML = '';
+            const title = document.createElement('h2');
+            title.className = "text-2xl font-semibold text-gray-700 mb-6";
+            title.textContent = "Which product is the customer inquiring about?";
+            contentDiv.appendChild(title);
+
+            const grid = document.createElement('div');
+            grid.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4";
+            
+            products.forEach(product => {
+                const button = document.createElement('button');
+                button.className = "w-full h-24 p-4 button-gradient text-white font-medium rounded-xl shadow-md hover:shadow-lg transition-all transform hover:scale-105 flex items-center justify-center text-lg text-center";
+                button.textContent = product.name;
+                button.onclick = () => {
+                    if (product.subProducts) {
+                        navigationHistory.push({ type: 'category', data: products });
+                        renderSubProducts(product.subProducts, product.name);
+                    } else {
+                        navigationHistory.push({ type: 'category', data: products });
+                        renderSymptomQuestions(product);
+                    }
+                };
+                grid.appendChild(button);
+            });
+            contentDiv.appendChild(grid);
+            backButton.classList.add('hidden');
+            homeButton.classList.add('hidden');
+            navigationHistory = [];
+        }
+
+        function renderSubProducts(subProducts, categoryName) {
+            contentDiv.innerHTML = '';
+            const title = document.createElement('h2');
+            title.className = "text-2xl font-semibold text-gray-700 mb-6";
+            title.textContent = `Select a ${categoryName.toLowerCase()} model:`;
+            contentDiv.appendChild(title);
+            
+            const grid = document.createElement('div');
+            grid.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4";
+            
+            subProducts.forEach(product => {
+                const button = document.createElement('button');
+                button.className = "w-full h-24 p-4 button-gradient text-white font-medium rounded-xl shadow-md hover:shadow-lg transition-all transform hover:scale-105 flex items-center justify-center text-lg text-center";
+                button.textContent = product.name;
+                button.onclick = () => {
+                    navigationHistory.push({ type: 'subProduct', data: subProducts, categoryName: categoryName });
+                    if (product.symptoms) {
+                        renderSymptomQuestions(product);
+                    } else {
+                        renderProbingQuestions(product);
+                    }
+                };
+                grid.appendChild(button);
+            });
+            contentDiv.appendChild(grid);
+            backButton.classList.remove('hidden');
+            homeButton.classList.remove('hidden');
+        }
+
+        function renderSymptomQuestions(product) {
+            contentDiv.innerHTML = '';
+            const title = document.createElement('h2');
+            title.className = "text-2xl font-semibold text-gray-700 mb-6";
+            title.textContent = `What is the nature of the issue with the ${product.name.toLowerCase()}?`;
+            contentDiv.appendChild(title);
+
+            const grid = document.createElement('div');
+            // Change layout to flexbox for better centering of 3 buttons
+            grid.className = "flex flex-wrap justify-center gap-4";
+            
+            product.symptoms.forEach(symptom => {
+                const button = document.createElement('button');
+                button.className = "min-w-[200px] h-24 p-4 button-gradient text-white font-medium rounded-xl shadow-md hover:shadow-lg transition-all transform hover:scale-105 flex items-center justify-center text-lg text-center";
+                button.textContent = symptom.name;
+                button.onclick = () => {
+                    navigationHistory.push({ type: 'symptom', data: product });
+                    renderProbingQuestions(symptom);
+                };
+                grid.appendChild(button);
+            });
+            contentDiv.appendChild(grid);
+            backButton.classList.remove('hidden');
+            homeButton.classList.remove('hidden');
+        }
+
+        function renderProbingQuestions(data) {
+            contentDiv.innerHTML = '';
+            
+            const card = document.createElement('div');
+            card.className = "bg-white p-8 rounded-2xl shadow-lg border border-gray-200 w-full text-left";
+            card.innerHTML = `
+                <h2 class="text-2xl font-bold text-gray-700 mb-4">${data.name || 'Questions'}</h2>
+                <p class="text-gray-600 mb-6">Ask these questions to uncover the customer's specific needs:</p>
+                <ol class="list-decimal list-inside text-lg text-gray-800 space-y-4">
+                    ${data.questions.map(q => `<li>${q}</li>`).join('')}
+                </ol>
+                <!-- NOTE TO AGENT: It is recommended to ask these questions during the whole troubleshooting process, not one after the other, to avoid overwhelming the customer. -->
+            `;
+            contentDiv.appendChild(card);
+            
+            const nextSteps = document.createElement('div');
+            nextSteps.className = "mt-8 text-center text-gray-600";
+            nextSteps.innerHTML = `
+                <p class="font-bold text-xl mb-2">Next Steps:</p>
+                <p>After asking these questions, you'll have all the information you need to confidently recommend a solution and do the troubleshooting necessary.</p>
+            `;
+            contentDiv.appendChild(nextSteps);
+            
+            backButton.classList.remove('hidden');
+            homeButton.classList.remove('hidden');
+        }
+
+        backButton.onclick = () => {
+            const lastState = navigationHistory.pop();
+            if (lastState) {
+                if (lastState.type === 'category') {
+                    renderProductCategories();
+                } else if (lastState.type === 'subProduct') {
+                    renderSubProducts(lastState.data, lastState.categoryName);
+                } else if (lastState.type === 'symptom') {
+                    renderSymptomQuestions(lastState.data);
+                }
+            }
+        };
+
+        homeButton.onclick = () => {
+            renderProductCategories();
+        };
+
+        // Initial render
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProductCategories();
+        });
+    </script>
+</body>
+</html>
