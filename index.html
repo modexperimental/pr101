@@ -1,6 +1,3 @@
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,10 +19,10 @@
             padding: 1.5rem;
         }
         .container {
-            max-width: 700px; /* Adjusted to be wider */
+            max-width: 700px;
             width: 100%;
             background-color: #ffffff;
-            border-radius: 2rem; /* Adjusted for more pronounced rounded corners */
+            border-radius: 2rem;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             padding: 3rem;
             text-align: center;
@@ -42,8 +39,15 @@
 
     <div class="container mx-auto p-6 sm:p-8 md:p-12 bg-white rounded-3xl shadow-2xl">
         <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-800 mb-6">SHS TS PROBING 101</h1>
-                <div id="content" class="min-h-[250px] flex flex-col justify-center items-center">
-            <!-- Dynamic content will be loaded here -->
+        
+        <div class="flex justify-end mb-4">
+            <select id="language-switcher" class="bg-gray-200 text-gray-800 rounded-md py-1 px-2 text-sm">
+                <option value="en">English</option>
+                <option value="fr">Français</option>
+            </select>
+        </div>
+
+        <div id="content" class="min-h-[250px] flex flex-col justify-center items-center">
         </div>
 
         <div class="mt-12 pt-6 border-t border-gray-200 text-gray-500 flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
@@ -57,239 +61,473 @@
     </div>
 
     <script>
-        const products = [
-            { id: 'camera', name: 'Cameras', subProducts: [
-                { id: 'camera-indoor', name: 'Indoor Camera', symptoms: [
-                    { name: 'Wi-Fi Related', questions: [
-                        "Is the internet working on other devices in the home?",
-                        "Is the router currently powered on?",
-                        "Has the router or booster been rebooted recently (manually or by a power outage)?",
-                        "Was there any recent changes to your Wi-Fi settings or password?",
-                        "If a booster is used, is the main booster still connected to the router via an Ethernet cable?",
-                        "Are there any other non-tls signal extenders or repeaters in the home? (if no boosters are showing on InsightC)"
+        const translations = {
+            en: {
+                h1: "SHS TS PROBING 101",
+                selectProduct: "Which product is the customer inquiring about?",
+                selectModel: "Select a {category} model:",
+                selectSymptom: "What is the nature of the issue with the {product}?",
+                questionsTitle: "Questions",
+                questionsSubtitle: "Ask these questions to uncover the customer's specific needs:",
+                nextStepsTitle: "Next Steps:",
+                nextStepsText: "After asking these questions, you'll have all the information you need to confidently recommend a solution and do the troubleshooting necessary.",
+                backButton: "Back",
+                homeButton: "Home",
+                products: [
+                    { id: 'camera', name: 'Cameras', subProducts: [
+                        { id: 'camera-indoor', name: 'Indoor Camera', symptoms: [
+                            { name: 'Wi-Fi Related', questions: [
+                                "Is the internet working on other devices in the home?",
+                                "Is the router currently powered on?",
+                                "Has the router or booster been rebooted recently (manually or by a power outage)?",
+                                "Was there any recent changes to your Wi-Fi settings or password?",
+                                "If a booster is used, is the main booster still connected to the router via an Ethernet cable?",
+                                "Are there any other non-tls signal extenders or repeaters in the home? (if no boosters are showing on InsightC)"
+                            ]},
+                            { name: 'Power Related', questions: [
+                                "Did you have any power outages?",
+                                "Do you see an LED light on the camera?",
+                                "Have you tried a reboot?",
+                                "Is the power cord or power adapter damaged in any way?",
+                                "Is the power adapter securely plugged into the camera and the wall?",
+                                "Is the outlet working for other devices?"
+                            ]},
+                            { name: "General / Don't Know", questions: [
+                                "Can you describe the problem you are having?",
+                                "Is the camera working on your application?",
+                                "Has this happened before?",
+                                "When was the last time the camera worked?",
+                                "What color is the LED light on the camera, if any?",
+                                "Have you attempted to physically reset the camera by any chance?"
+                            ]}
+                        ]},
+                        { id: 'camera-outdoor', name: 'Outdoor Camera', symptoms: [
+                            { name: 'Wi-Fi Related', questions: [
+                                "Is the internet working on other devices in the home?",
+                                "Is the router currently powered on?",
+                                "Has the router or booster been rebooted recently (manually or by a power outage)?",
+                                "Have there been any recent changes to your Wi-Fi settings or password?",
+                                "If a booster is used, is the main booster still connected to the router via an Ethernet cable?",
+                                "If a secondary booster is used, is it currently powered on? whats the led status?",
+                                "Are there any other non-tls signal extenders or repeaters in the home? (if no boosters are showing on InsightC)",
+                                "What is the distance between the router and the camera?"
+                            ]},
+                            { name: 'Power Related', questions: [
+                                "Did you have any power outages?",
+                                "Do you see an LED light on the camera?",
+                                "Have you tried a reboot?",
+                                "Is the power adapter securely plugged into the camera and the wall?",
+                                "Is the outlet working for other devices?",
+                                "Is the extender cord still plugged into the camera's main adapter?",
+                                "Is the power cord or power adapter damaged in any way?"
+                            ]},
+                            { name: "General / Don't Know", questions: [
+                                "Has this happened before?",
+                                "Can you describe the camera's symptoms?",
+                                "When was the last time the camera worked?",
+                                "What is the weather like where the camera is located?",
+                                "Have you attempted to physically reset the camera by any chance?"
+                            ]}
+                        ]}
                     ]},
-                    { name: 'Power Related', questions: [
-                        "Did you have any power outages?",
-                        "Do you see an LED light on the camera?",
-                        "Have you tried a reboot?",
-                        "Is the power cord or power adapter damaged in any way?",
-                        "Is the power adapter securely plugged into the camera and the wall?",
-                        "Is the outlet working for other devices?"
+                    { id: 'doorbell', name: 'Doorbell', subProducts: [
+                        { id: 'doorbell-adc-v750', name: 'ADC V750', symptoms: [
+                            { name: 'Connectivity Issues', questions: [
+                                "Is the internet working on other devices in your home?",
+                                "Is the router currently powered on?",
+                                "Has the router or any Wi-Fi boosters been rebooted recently (manually or by a power outage)?",
+                                "Have there been any recent changes to your Wi-Fi settings or password?",
+                                "If a booster is used, is the main booster still connected to the router via an Ethernet cable?",
+                                "If a secondary booster is used, is it currently powered on? whats the led status?",
+                                "Are there any other non-tls signal extenders or repeaters in the home? (if no boosters are showing on InsightC)"
+                            ]},
+                            { name: 'Power Issues', questions: [
+                                "Is the doorbell button lighting up?",
+                                "Have you tried rebooting the doorbell?",
+                                "Have you had any recent power outages or electrical flickers?"
+                            ]}
+                        ]},
+                        { id: 'doorbell-skybell-105', name: 'Skybell 105', symptoms: [
+                            { name: 'Connectivity Issues', questions: [
+                                "Is the internet working on other devices in your home?",
+                                "Is the router currently powered on?",
+                                "Has the router or any Wi-Fi boosters been rebooted recently (manually or by a power outage)?",
+                                "Have there been any recent changes to your Wi-Fi settings or password?",
+                                "If a booster is used, is the main booster still connected to the router via an Ethernet cable?",
+                                "If a secondary booster is used, is it currently powered on? whats the led status?",
+                                "Are there any other non-tls signal extenders or repeaters in the home? (if no boosters are showing on InsightC)"
+                            ]},
+                            { name: 'Power Issues', questions: [
+                                "Is the LED light on the doorbell solid, blinking, or off?",
+                                "Have you checked the transformer for any issues?",
+                                "Have you recently had a power outage or any electrical work done?"
+                            ]},
+                            { name: "General / Don't Know", questions: [
+                                "When was the doorbell last working correctly?",
+                                "Can you describe what the doorbell is doing right now?",
+                                "Has this issue occurred before?",
+                                "Have you attempted to physically reset the doorbell?",
+                                "What is the weather like where the doorbell is located?"
+                            ]}
+                        ]}
                     ]},
-                    { name: "General / Don't Know", questions: [
-                        "Can you describe the problem you are having?",
-                        "Is the camera working on your application?",
-                        "Has this happened before?",
-                        "When was the last time the camera worked?",
-                        "What color is the LED light on the camera, if any?",
-                        "Have you attempted to physically reset the camera by any chance?"
+                    { id: 'sensors', name: 'Sensors', subProducts: [
+                        { id: 'sensors-door', name: 'Door Sensor', symptoms: [
+                            { name: 'General', questions: [
+                                "Can you describe the exact symptoms?",
+                                "Is the sensor's LED light blinking when you open the door/w?",
+                                "Have you recently replaced the battery?",
+                                "Is the battery installed correctly?",
+                                "Do you have any other spare battery to try?"
+                            ]}
+                        ]},
+                        { id: 'sensors-motion', name: 'Motion Sensor', symptoms: [
+                            { name: 'General', questions: [
+                                "Have you recently replaced the battery?",
+                                "Have you recently replaced the battery?",
+                                "Have you recently replaced the battery?",
+                                "Have you recently replaced the battery?",
+                                "Have you recently replaced the battery?"
+                            ]}
+                        ]},
+                        { id: 'sensors-glass', name: 'Glass Break Sensor', symptoms: [
+                            { name: 'General', questions: [
+                                "Have you recently replaced the battery?",
+                                "Have you recently replaced the battery?",
+                                "Have you recently replaced the battery?",
+                                "Have you recently replaced the battery?",
+                                "Have you recently replaced the battery?"
+                            ]}
+                        ]},
+                        { id: 'sensors-smoke', name: 'Smoke Detector', symptoms: [
+                            { name: 'False Alarms', questions: [
+                                "Was there any construction or recent renovations taking place in the area around the smoke detector?",
+                                "Is the detector located near a kitchen, bathroom, or any other area where there might be steam, smoke from cooking, or high humidity?",
+                                "Can you tell me about the detector's location? Is it near a window or vent where there might be a strong draft or sudden temperature changes?",
+                                "When was the last time the smoke detector was cleaned or maintained?",
+                                "Are there any other electronic devices or appliances nearby that could be causing electrical interference?",
+                                "Were there any brief power outages or electrical flickers around the time of the alarm?",
+                                "Was the alarm triggered during the day or night?",
+                                "Can you countdown how many second between each beep?"
+                            ]},
+                            { name: 'General', questions: [
+                                "What is the LED light status?",
+                                "Do you hear any chirping sound?",
+                                "Is the unit still installed on the ceiling?",
+                                "Have you recently replaced the batteries?"
+                            ]}
+                        ]},
+                        { id: 'co-detector', name: 'Carbon Monoxide Detector', symptoms: [
+                            { name: 'False Alarms', questions: [
+                                "Is the detector located near a kitchen or garage?",
+                                "Has the detector been exposed to strong cleaning chemicals or paint fumes?",
+                                "Are there any brief power outages or electrical flickers around the time of the alarm?",
+                                "When was the last time the battery was replaced?"
+                            ]},
+                            { name: 'General', questions: [
+                                "What is the LED light status?",
+                                "Is there any odor of exhaust fumes or anything else?",
+                                "Are you able to test the detector?",
+                                "When was the last time you replaced the battery?"
+                            ]}
+                        ]},
+                        { id: 'flood-sensor', name: 'Flood Sensor', symptoms: [
+                            { name: 'General Troubles', questions: [
+                                "Can you describe the location of the flood sensor?",
+                                "Is the sensor currently wet or in contact with water?",
+                                "When was the last time you tested the sensor?",
+                                "When was the last time you replaced the battery?"
+                            ]}
+                        ]}
+                    ]},
+                    { id: 'thermostat', name: 'Smart Thermostat T2000', symptoms: [
+                        { name: 'General', questions: [
+                            "Can you describe what the display screen shows right now?",
+                            "What happened right before the thermostat stopped working?",
+                            "have you recently replaced the batteries with fresh batteries?",
+                            "Have you checked the circuit breaker that controls your HVAC system to make sure it hasn't been tripped?",
+                            "Do you hear or see any signs of the furnace or AC unit starting up?",
+                            "Can you manually control the thermostat by pressing the buttons on the wall unit?",
+                            "Can you still control the thermostat directly from the wall unit itself, or is it unresponsive to both the app and manual adjustments?"
+                        ]}
+                    ]},
+                    { id: 'smart-lock', name: 'Kwikset Doorlock', symptoms: [
+                        { name: 'General', questions: [
+                            "When you try to lock or unlock, does the mechanism move at all?",
+                            "When you try to lock or unlock, does the mechanism move at all?",
+                            "When you try to lock or unlock, does the mechanism move at all?",
+                            "When you try to lock or unlock, does the mechanism move at all?",
+                            "When you try to lock or unlock, does the mechanism move at all?",
+                            "Has the lock been exposed to extreme weather recently?",
+                            "Is the lock showing as online in the app?",
+                        ]}
+                    ]},
+                    { id: 'garage-controller', name: 'Garage Door Control', symptoms: [
+                        { name: 'General', questions: [
+                            "Is the garage door opener plugged in and powered?",
+                            "Does the controller’s LED light turn on?",
+                            "Can the door be opened with the wall button?",
+                            "Can the door be opened with the handheld remote?",
+                            "Are there any obstructions in the door’s path?",
+                            "Has there been a recent power outage?",
+                            "Is the controller showing as online in the app?",
+                            "Have you tried rebooting the controller?"
+                        ]}
                     ]}
-                ]},
-                { id: 'camera-outdoor', name: 'Outdoor Camera', symptoms: [
-                    { name: 'Wi-Fi Related', questions: [
-                        "Is the internet working on other devices in the home?",
-                        "Is the router currently powered on?",
-                        "Has the router or booster been rebooted recently (manually or by a power outage)?",
-                        "Have there been any recent changes to your Wi-Fi settings or password?",
-                        "If a booster is used, is the main booster still connected to the router via an Ethernet cable?",
-                        "If a secondary booster is used, is it currently powered on? whats the led status?",
-                        "Are there any other non-tls signal extenders or repeaters in the home? (if no boosters are showing on InsightC)",
-                        "What is the distance between the router and the camera?"
+                ]
+            },
+            fr: {
+                h1: "SHS TS PROBING 101",
+                selectProduct: "Quelle est la demande du client ?",
+                selectModel: "Sélectionnez un modèle de {category} :",
+                selectSymptom: "Quelle est la nature du problème avec le {product} ?",
+                questionsTitle: "Questions",
+                questionsSubtitle: "Posez ces questions pour découvrir les besoins spécifiques du client :",
+                nextStepsTitle: "Prochaines étapes :",
+                nextStepsText: "Après avoir posé ces questions, vous aurez toutes les informations nécessaires pour recommander en toute confiance une solution et effectuer le dépannage nécessaire.",
+                backButton: "Retour",
+                homeButton: "Accueil",
+                products: [
+                    { id: 'camera', name: 'Caméras', subProducts: [
+                        { id: 'camera-indoor', name: 'Caméra intérieure', symptoms: [
+                            { name: 'Lié au Wi-Fi', questions: [
+                                "L'internet fonctionne-t-il sur d'autres appareils à la maison ?",
+                                "Le routeur est-il actuellement allumé ?",
+                                "Le routeur ou le répéteur a-t-il été redémarré récemment (manuellement ou à cause d'une panne de courant) ?",
+                                "Y a-t-il eu des changements récents dans les paramètres ou le mot de passe de votre Wi-Fi ?",
+                                "Si un répéteur est utilisé, le répéteur principal est-il toujours connecté au routeur via un câble Ethernet ?",
+                                "Y a-t-il d'autres prolongateurs de signal ou répéteurs non-tls dans la maison ? (si aucun répéteur n'apparaît sur InsightC)"
+                            ]},
+                            { name: 'Lié à l\'alimentation', questions: [
+                                "Avez-vous eu des pannes de courant ?",
+                                "Voyez-vous une lumière LED sur la caméra ?",
+                                "Avez-vous essayé de redémarrer ?",
+                                "Le cordon d'alimentation ou l'adaptateur est-il endommagé de quelque manière que ce soit ?",
+                                "L'adaptateur secteur est-il bien branché sur la caméra et au mur ?",
+                                "La prise fonctionne-t-elle pour d'autres appareils ?"
+                            ]},
+                            { name: "Général / Je ne sais pas", questions: [
+                                "Pouvez-vous décrire le problème que vous rencontrez ?",
+                                "La caméra fonctionne-t-elle sur votre application ?",
+                                "Est-ce que cela est déjà arrivé ?",
+                                "Quand la caméra a-t-elle fonctionné pour la dernière fois ?",
+                                "De quelle couleur est la lumière LED de la caméra, s'il y en a une ?",
+                                "Avez-vous essayé de réinitialiser physiquement la caméra par hasard ?"
+                            ]}
+                        ]},
+                        { id: 'camera-outdoor', name: 'Caméra extérieure', symptoms: [
+                            { name: 'Lié au Wi-Fi', questions: [
+                                "L'internet fonctionne-t-il sur d'autres appareils à la maison ?",
+                                "Le routeur est-il actuellement allumé ?",
+                                "Le routeur ou le répéteur a-t-il été redémarré récemment (manuellement ou à cause d'une panne de courant) ?",
+                                "Y a-t-il eu des changements récents dans les paramètres ou le mot de passe de votre Wi-Fi ?",
+                                "Si un répéteur est utilisé, le répéteur principal est-il toujours connecté au routeur via un câble Ethernet ?",
+                                "Si un répéteur secondaire est utilisé, est-il actuellement allumé ? Quel est l'état du LED ?",
+                                "Y a-t-il d'autres prolongateurs de signal ou répéteurs non-tls dans la maison ? (si aucun répéteur n'apparaît sur InsightC)",
+                                "Quelle est la distance entre le routeur et la caméra ?"
+                            ]},
+                            { name: 'Lié à l\'alimentation', questions: [
+                                "Avez-vous eu des pannes de courant ?",
+                                "Voyez-vous une lumière LED sur la caméra ?",
+                                "Avez-vous essayé de redémarrer ?",
+                                "L'adaptateur secteur est-il bien branché sur la caméra et au mur ?",
+                                "La prise fonctionne-t-elle pour d'autres appareils ?",
+                                "Le cordon d'extension est-il toujours branché à l'adaptateur principal de la caméra ?",
+                                "Le cordon d'alimentation ou l'adaptateur est-il endommagé de quelque manière que ce soit ?"
+                            ]},
+                            { name: "Général / Je ne sais pas", questions: [
+                                "Est-ce que cela est déjà arrivé ?",
+                                "Pouvez-vous décrire les symptômes de la caméra ?",
+                                "Quand la caméra a-t-elle fonctionné pour la dernière fois ?",
+                                "Quel temps fait-il à l'endroit où se trouve la caméra ?",
+                                "Avez-vous essayé de réinitialiser physiquement la caméra par hasard ?"
+                            ]}
+                        ]}
                     ]},
-                    { name: 'Power Related', questions: [
-                        "Did you have any power outages?",
-                        "Do you see an LED light on the camera?",
-                        "Have you tried a reboot?",
-                        "Is the power adapter securely plugged into the camera and the wall?",
-                        "Is the outlet working for other devices?",
-                        "Is the extender cord still plugged into the camera's main adapter?",
-                        "Is the power cord or power adapter damaged in any way?"
+                    { id: 'doorbell', name: 'Sonnette', subProducts: [
+                        { id: 'doorbell-adc-v750', name: 'ADC V750', symptoms: [
+                            { name: 'Problèmes de connectivité', questions: [
+                                "L'internet fonctionne-t-il sur d'autres appareils chez vous ?",
+                                "Le routeur est-il actuellement allumé ?",
+                                "Le routeur ou les répéteurs Wi-Fi ont-ils été redémarrés récemment (manuellement ou suite à une panne de courant) ?",
+                                "Y a-t-il eu des changements récents dans les paramètres ou le mot de passe de votre Wi-Fi ?",
+                                "Si un répéteur est utilisé, le répéteur principal est-il toujours connecté au routeur via un câble Ethernet ?",
+                                "Si un répéteur secondaire est utilisé, est-il actuellement allumé ? Quel est l'état du LED ?",
+                                "Y a-t-il d'autres prolongateurs de signal ou répéteurs non-tls dans la maison ? (si aucun répéteur n'apparaît sur InsightC)"
+                            ]},
+                            { name: 'Problèmes d\'alimentation', questions: [
+                                "Le bouton de la sonnette s'allume-t-il ?",
+                                "Avez-vous essayé de redémarrer la sonnette ?",
+                                "Avez-vous récemment eu des pannes de courant ou des clignotements électriques ?"
+                            ]}
+                        ]},
+                        { id: 'doorbell-skybell-105', name: 'Skybell 105', symptoms: [
+                            { name: 'Problèmes de connectivité', questions: [
+                                "L'internet fonctionne-t-il sur d'autres appareils chez vous ?",
+                                "Le routeur est-il actuellement allumé ?",
+                                "Le routeur ou les répéteurs Wi-Fi ont-ils été redémarrés récemment (manuellement ou suite à une panne de courant) ?",
+                                "Y a-t-il eu des changements récents dans les paramètres ou le mot de passe de votre Wi-Fi ?",
+                                "Si un répéteur est utilisé, le répéteur principal est-il toujours connecté au routeur via un câble Ethernet ?",
+                                "Si un répéteur secondaire est utilisé, est-il actuellement allumé ? Quel est l'état du LED ?",
+                                "Y a-t-il d'autres prolongateurs de signal ou répéteurs non-tls dans la maison ? (si aucun répéteur n'apparaît sur InsightC)"
+                            ]},
+                            { name: 'Problèmes d\'alimentation', questions: [
+                                "La lumière LED de la sonnette est-elle fixe, clignotante ou éteinte ?",
+                                "Avez-vous vérifié le transformateur pour tout problème ?",
+                                "Avez-vous récemment eu une panne de courant ou des travaux électriques effectués ?"
+                            ]},
+                            { name: "Général / Je ne sais pas", questions: [
+                                "Quand la sonnette a-t-elle fonctionné correctement pour la dernière fois ?",
+                                "Pouvez-vous décrire ce que fait la sonnette en ce moment ?",
+                                "Ce problème est-il déjà survenu ?",
+                                "Avez-vous essayé de réinitialiser physiquement la sonnette ?",
+                                "Quel temps fait-il à l'endroit où se trouve la sonnette ?"
+                            ]}
+                        ]}
                     ]},
-                    { name: "General / Don't Know", questions: [
-                        "Has this happened before?",
-                        "Can you describe the camera's symptoms?",
-                        "When was the last time the camera worked?",
-                        "What is the weather like where the camera is located?",
-                        "Have you attempted to physically reset the camera by any chance?"
-                    ]}
-                ]}
-            ]},
-            { id: 'doorbell', name: 'Doorbell', subProducts: [
-                { id: 'doorbell-adc-v750', name: 'ADC V750', symptoms: [
-                    { name: 'Connectivity Issues', questions: [
-                        "Is the internet working on other devices in your home?",
-                        "Is the router currently powered on?",
-                        "Has the router or any Wi-Fi boosters been rebooted recently (manually or by a power outage)?",
-                        "Have there been any recent changes to your Wi-Fi settings or password?",
-                        "If a booster is used, is the main booster still connected to the router via an Ethernet cable?",
-                        "If a secondary booster is used, is it currently powered on? whats the led status?",
-                        "Are there any other non-tls signal extenders or repeaters in the home? (if no boosters are showing on InsightC)"
-                                         ]},
-                    { name: 'Power Issues', questions: [
-                        "Is the doorbell button lighting up?",
-                        "Have you tried rebooting the doorbell?",
-                        "Have you had any recent power outages or electrical flickers?"
-                    ]}
-                ]},
-                { id: 'doorbell-skybell-105', name: 'Skybell 105', symptoms: [
-                    { name: 'Connectivity Issues', questions: [
-                        "Is the internet working on other devices in your home?",
-                        "Is the router currently powered on?",
-                        "Has the router or any Wi-Fi boosters been rebooted recently (manually or by a power outage)?",
-                        "Have there been any recent changes to your Wi-Fi settings or password?",
-                        "If a booster is used, is the main booster still connected to the router via an Ethernet cable?",
-                        "If a secondary booster is used, is it currently powered on? whats the led status?",
-                        "Are there any other non-tls signal extenders or repeaters in the home? (if no boosters are showing on InsightC)"
-                     
+                    { id: 'sensors', name: 'Capteurs', subProducts: [
+                        { id: 'sensors-door', name: 'Capteur de porte', symptoms: [
+                            { name: 'Général', questions: [
+                                "Pouvez-vous décrire les symptômes exacts ?",
+                                "La lumière LED du capteur clignote-t-elle lorsque vous ouvrez la porte/fenêtre ?",
+                                "Avez-vous récemment remplacé la pile ?",
+                                "La pile est-elle installée correctement ?",
+                                "Avez-vous une autre pile de rechange à essayer ?"
+                            ]}
+                        ]},
+                        { id: 'sensors-motion', name: 'Détecteur de mouvement', symptoms: [
+                            { name: 'Général', questions: [
+                                "Avez-vous récemment remplacé la pile ?",
+                                "Avez-vous récemment remplacé la pile ?",
+                                "Avez-vous récemment remplacé la pile ?",
+                                "Avez-vous récemment remplacé la pile ?",
+                                "Avez-vous récemment remplacé la pile ?"
+                            ]}
+                        ]},
+                        { id: 'sensors-glass', name: 'Détecteur de bris de vitre', symptoms: [
+                            { name: 'Général', questions: [
+                                "Avez-vous récemment remplacé la pile ?",
+                                "Avez-vous récemment remplacé la pile ?",
+                                "Avez-vous récemment remplacé la pile ?",
+                                "Avez-vous récemment remplacé la pile ?",
+                                "Avez-vous récemment remplacé la pile ?"
+                            ]}
+                        ]},
+                        { id: 'sensors-smoke', name: 'Détecteur de fumée', symptoms: [
+                            { name: 'Fausses alarmes', questions: [
+                                "Y a-t-il eu des travaux de construction ou des rénovations récentes dans la zone autour du détecteur de fumée ?",
+                                "Le détecteur est-il situé près d'une cuisine, d'une salle de bain ou de toute autre zone où il pourrait y avoir de la vapeur, de la fumée de cuisson ou une forte humidité ?",
+                                "Pouvez-vous me parler de l'emplacement du détecteur ? Est-il près d'une fenêtre ou d'une bouche d'aération où il pourrait y avoir un fort courant d'air ou des changements de température soudains ?",
+                                "Quand le détecteur de fumée a-t-il été nettoyé ou entretenu pour la dernière fois ?",
+                                "Y a-t-il d'autres appareils électroniques ou électroménagers à proximité qui pourraient causer des interférences électriques ?",
+                                "Y a-t-il eu de brèves pannes de courant ou des clignotements électriques au moment de l'alarme ?",
+                                "L'alarme a-t-elle été déclenchée de jour ou de nuit ?",
+                                "Pouvez-vous compter combien de secondes il y a entre chaque bip ?"
+                            ]},
+                            { name: 'Général', questions: [
+                                "Quel est l'état de la lumière LED ?",
+                                "Entendez-vous un son de 'bip-bip' ?",
+                                "L'appareil est-il toujours installé au plafond ?",
+                                "Avez-vous récemment remplacé les piles ?"
+                            ]}
+                        ]},
+                        { id: 'co-detector', name: 'Détecteur de monoxyde de carbone', symptoms: [
+                            { name: 'Fausses alarmes', questions: [
+                                "Le détecteur est-il situé près d'une cuisine ou d'un garage ?",
+                                "Le détecteur a-t-il été exposé à des produits de nettoyage puissants ou à des vapeurs de peinture ?",
+                                "Y a-t-il eu de brèves pannes de courant ou des clignotements électriques au moment de l'alarme ?",
+                                "Quand la pile a-t-elle été remplacée pour la dernière fois ?"
+                            ]},
+                            { name: 'Général', questions: [
+                                "Quel est l'état de la lumière LED ?",
+                                "Y a-t-il une odeur de gaz d'échappement ou autre chose ?",
+                                "Êtes-vous en mesure de tester le détecteur ?",
+                                "Quand avez-vous remplacé la pile pour la dernière fois ?"
+                            ]}
+                        ]},
+                        { id: 'flood-sensor', name: 'Capteur d\'inondation', symptoms: [
+                            { name: 'Problèmes généraux', questions: [
+                                "Pouvez-vous décrire l'emplacement du capteur d'inondation ?",
+                                "Le capteur est-il actuellement mouillé ou en contact avec de l'eau ?",
+                                "Quand avez-vous testé le capteur pour la dernière fois ?",
+                                "Quand avez-vous remplacé la pile pour la dernière fois ?"
+                            ]}
+                        ]}
                     ]},
-                    { name: 'Power Issues', questions: [
-                        "Is the LED light on the doorbell solid, blinking, or off?",
-                        "Have you checked the transformer for any issues?",
-                        "Have you recently had a power outage or any electrical work done?"
+                    { id: 'thermostat', name: 'Thermostat intelligent T2000', symptoms: [
+                        { name: 'Général', questions: [
+                            "Pouvez-vous décrire ce que l'écran affiche en ce moment ?",
+                            "Que s'est-il passé juste avant que le thermostat ne cesse de fonctionner ?",
+                            "Avez-vous récemment remplacé les piles par des piles neuves ?",
+                            "Avez-vous vérifié le disjoncteur qui contrôle votre système CVC pour vous assurer qu'il n'a pas sauté ?",
+                            "Entendez-vous ou voyez-vous des signes indiquant que le four ou la climatisation démarre ?",
+                            "Pouvez-vous contrôler manuellement le thermostat en appuyant sur les boutons de l'unité murale ?",
+                            "Pouvez-vous toujours contrôler le thermostat directement depuis l'unité murale elle-même, ou est-il insensible à la fois à l'application et aux ajustements manuels ?"
+                        ]}
                     ]},
-                    { name: "General / Don't Know", questions: [
-                        "When was the doorbell last working correctly?",
-                        "Can you describe what the doorbell is doing right now?",
-                        "Has this issue occurred before?",
-                        "Have you attempted to physically reset the doorbell?",
-                        "What is the weather like where the doorbell is located?"
-                    ]}
-                ]}
-            ]},
-            { id: 'sensors', name: 'Sensors', subProducts: [
-                { id: 'sensors-door', name: 'Door Sensor', symptoms: [
-                    { name: 'General', questions: [
-                        "Can you describe the exact symptoms?",
-                        "Is the sensor's LED light blinking when you open the door/w?",
-                        "Have you recently replaced the battery?",
-                        "Is the battery installed correctly?",
-                        "Do you have any other spare battery to try?"
+                    { id: 'smart-lock', name: 'Serrure de porte Kwikset', symptoms: [
+                        { name: 'Général', questions: [
+                            "Lorsque vous essayez de verrouiller ou de déverrouiller, le mécanisme bouge-t-il du tout ?",
+                            "Lorsque vous essayez de verrouiller ou de déverrouiller, le mécanisme bouge-t-il du tout ?",
+                            "Lorsque vous essayez de verrouiller ou de déverrouiller, le mécanisme bouge-t-il du tout ?",
+                            "Lorsque vous essayez de verrouiller ou de déverrouiller, le mécanisme bouge-t-il du tout ?",
+                            "Lorsque vous essayez de verrouiller ou de déverrouiller, le mécanisme bouge-t-il du tout ?",
+                            "La serrure a-t-elle été exposée à des conditions météorologiques extrêmes récemment ?",
+                            "La serrure apparaît-elle en ligne dans l'application ?",
+                        ]}
                     ]},
-                   
-                ]},
-                { id: 'sensors-motion', name: 'Motion Sensor', symptoms: [
-                    { name: 'General', questions: [
-                        "Have you recently replaced the battery?",
-                        "Have you recently replaced the battery?",
-                        "Have you recently replaced the battery?",
-                        "Have you recently replaced the battery?",
-                        "Have you recently replaced the battery?"
+                    { id: 'garage-controller', name: 'Contrôleur de porte de garage', symptoms: [
+                        { name: 'Général', questions: [
+                            "L'ouvre-porte de garage est-il branché et alimenté ?",
+                            "La lumière LED du contrôleur s'allume-t-elle ?",
+                            "La porte peut-elle être ouverte avec le bouton mural ?",
+                            "La porte peut-elle être ouverte avec la télécommande portable ?",
+                            "Y a-t-il des obstructions dans le chemin de la porte ?",
+                            "Y a-t-il eu une panne de courant récente ?",
+                            "Le contrôleur apparaît-il en ligne dans l'application ?",
+                            "Avez-vous essayé de redémarrer le contrôleur ?"
+                        ]}
                     ]}
-                ]},
-                { id: 'sensors-glass', name: 'Glass Break Sensor', symptoms: [
-                    { name: 'General', questions: [
-                        "Have you recently replaced the battery?",
-                        "Have you recently replaced the battery?",
-                        "Have you recently replaced the battery?",
-                        "Have you recently replaced the battery?",
-                        "Have you recently replaced the battery?"
-                    ]}
-                ]},
-                { id: 'sensors-smoke', name: 'Smoke Detector', symptoms: [
-                    { name: 'False Alarms', questions: [
-                        "Was there any construction or recent renovations taking place in the area around the smoke detector?",
-                        "Is the detector located near a kitchen, bathroom, or any other area where there might be steam, smoke from cooking, or high humidity?",
-                        "Can you tell me about the detector's location? Is it near a window or vent where there might be a strong draft or sudden temperature changes?",
-                        "When was the last time the smoke detector was cleaned or maintained?",
-                        "Are there any other electronic devices or appliances nearby that could be causing electrical interference?",
-                        "Were there any brief power outages or electrical flickers around the time of the alarm?",
-                        "Was the alarm triggered during the day or night?",
-                        "Can you countdown how many second between each beep?"
-                    ]},
-                    { name: 'General', questions: [
-                        "What is the LED light status?",
-                        "Do you hear any chirping sound?",
-                        "Is the unit still installed on the ceiling?",
-                        "Have you recently replaced the batteries?"
-                    ]}
-                ]},
-                { id: 'co-detector', name: 'Carbon Monoxide Detector', symptoms: [
-                    { name: 'False Alarms', questions: [
-                        "Is the detector located near a kitchen or garage?",
-                        "Has the detector been exposed to strong cleaning chemicals or paint fumes?",
-                        "Are there any brief power outages or electrical flickers around the time of the alarm?",
-                        "When was the last time the battery was replaced?"
-                    ]},
-                    { name: 'General', questions: [
-                        "What is the LED light status?",
-                        "Is there any odor of exhaust fumes or anything else?",
-                        "Are you able to test the detector?",
-                        "When was the last time you replaced the battery?"
-                    ]}
-                ]},
-                { id: 'flood-sensor', name: 'Flood Sensor', symptoms: [
-                    { name: 'General Troubles', questions: [
-                        "Can you describe the location of the flood sensor?",
-                        "Is the sensor currently wet or in contact with water?",
-                        "When was the last time you tested the sensor?",
-                        "When was the last time you replaced the battery?"
-                                            ]}
-                ]}
-            ]},
-            { id: 'thermostat', name: 'Smart Thermostat T2000', symptoms: [
-                { name: 'General', questions: [
-                "Can you describe what the display screen shows right now?",
-"What happened right before the thermostat stopped working?", 
-"have you recently replaced the batteries with fresh batteries?",  
-"Have you checked the circuit breaker that controls your HVAC system to make sure it hasn't been tripped?", 
-"Do you hear or see any signs of the furnace or AC unit starting up?", 
-"Can you manually control the thermostat by pressing the buttons on the wall unit?", 
-"Can you still control the thermostat directly from the wall unit itself, or is it unresponsive to both the app and manual adjustments?"
-                ]}
-            ]},
-            { id: 'smart-lock', name: 'Kwikset Doorlock', symptoms: [
-                { name: 'General', questions: [
-                    "When you try to lock or unlock, does the mechanism move at all?",
-                    "When you try to lock or unlock, does the mechanism move at all?",
-                    "When you try to lock or unlock, does the mechanism move at all?",
-                    "When you try to lock or unlock, does the mechanism move at all?",
-                    "When you try to lock or unlock, does the mechanism move at all?",
-                    "Has the lock been exposed to extreme weather recently?",
-                    "Is the lock showing as online in the app?",
-                    
-                ]}
-            ]},
-            { id: 'garage-controller', name: 'Garage Door Control', symptoms: [
-                { name: 'General', questions: [
-                    "Is the garage door opener plugged in and powered?",
-                    "Does the controller’s LED light turn on?",
-                    "Can the door be opened with the wall button?",
-                    "Can the door be opened with the handheld remote?",
-                    "Are there any obstructions in the door’s path?",
-                    "Has there been a recent power outage?",
-                    "Is the controller showing as online in the app?",
-                    "Have you tried rebooting the controller?"
-
-
-                ]}
-            ]}
-        ];
+                ]
+            }
+        };
 
         const contentDiv = document.getElementById('content');
         const backButton = document.getElementById('back-button');
         const homeButton = document.getElementById('home-button');
+        const languageSwitcher = document.getElementById('language-switcher');
         let navigationHistory = [];
+        let currentLanguage = 'en';
+
+        function getTranslation(key, replacements = {}) {
+            let text = translations[currentLanguage][key];
+            for (const placeholder in replacements) {
+                text = text.replace(`{${placeholder}}`, replacements[placeholder]);
+            }
+            return text;
+        }
 
         function renderProductCategories() {
             contentDiv.innerHTML = '';
             const title = document.createElement('h2');
             title.className = "text-2xl font-semibold text-gray-700 mb-6";
-            title.textContent = "Which product is the customer inquiring about?";
+            title.textContent = getTranslation('selectProduct');
             contentDiv.appendChild(title);
 
             const grid = document.createElement('div');
             grid.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4";
             
-            products.forEach(product => {
+            const productsData = translations[currentLanguage].products;
+            productsData.forEach(product => {
                 const button = document.createElement('button');
                 button.className = "w-full h-24 p-4 button-gradient text-white font-medium rounded-xl shadow-md hover:shadow-lg transition-all transform hover:scale-105 flex items-center justify-center text-lg text-center";
                 button.textContent = product.name;
                 button.onclick = () => {
                     if (product.subProducts) {
-                        navigationHistory.push({ type: 'category', data: products });
+                        navigationHistory.push({ type: 'category', data: productsData });
                         renderSubProducts(product.subProducts, product.name);
                     } else {
-                        navigationHistory.push({ type: 'category', data: products });
+                        navigationHistory.push({ type: 'category', data: productsData });
                         renderSymptomQuestions(product);
                     }
                 };
@@ -299,13 +537,14 @@
             backButton.classList.add('hidden');
             homeButton.classList.add('hidden');
             navigationHistory = [];
+            document.querySelector('h1').textContent = getTranslation('h1');
         }
 
         function renderSubProducts(subProducts, categoryName) {
             contentDiv.innerHTML = '';
             const title = document.createElement('h2');
             title.className = "text-2xl font-semibold text-gray-700 mb-6";
-            title.textContent = `Select a ${categoryName.toLowerCase()} model:`;
+            title.textContent = getTranslation('selectModel', { category: categoryName.toLowerCase() });
             contentDiv.appendChild(title);
             
             const grid = document.createElement('div');
@@ -328,17 +567,18 @@
             contentDiv.appendChild(grid);
             backButton.classList.remove('hidden');
             homeButton.classList.remove('hidden');
+            backButton.textContent = getTranslation('backButton');
+            homeButton.textContent = getTranslation('homeButton');
         }
 
         function renderSymptomQuestions(product) {
             contentDiv.innerHTML = '';
             const title = document.createElement('h2');
             title.className = "text-2xl font-semibold text-gray-700 mb-6";
-            title.textContent = `What is the nature of the issue with the ${product.name.toLowerCase()}?`;
+            title.textContent = getTranslation('selectSymptom', { product: product.name.toLowerCase() });
             contentDiv.appendChild(title);
 
             const grid = document.createElement('div');
-            // Change layout to flexbox for better centering of 3 buttons
             grid.className = "flex flex-wrap justify-center gap-4";
             
             product.symptoms.forEach(symptom => {
@@ -354,6 +594,8 @@
             contentDiv.appendChild(grid);
             backButton.classList.remove('hidden');
             homeButton.classList.remove('hidden');
+            backButton.textContent = getTranslation('backButton');
+            homeButton.textContent = getTranslation('homeButton');
         }
 
         function renderProbingQuestions(data) {
@@ -362,25 +604,28 @@
             const card = document.createElement('div');
             card.className = "bg-white p-8 rounded-2xl shadow-lg border border-gray-200 w-full text-left";
             card.innerHTML = `
-                <h2 class="text-2xl font-bold text-gray-700 mb-4">${data.name || 'Questions'}</h2>
-                <p class="text-gray-600 mb-6">Ask these questions to uncover the customer's specific needs:</p>
+                <h2 class="text-2xl font-bold text-gray-700 mb-4">${data.name || getTranslation('questionsTitle')}</h2>
+                <p class="text-gray-600 mb-6">${getTranslation('questionsSubtitle')}</p>
                 <ol class="list-decimal list-inside text-lg text-gray-800 space-y-4">
                     ${data.questions.map(q => `<li>${q}</li>`).join('')}
                 </ol>
-                <!-- NOTE TO AGENT: It is recommended to ask these questions during the whole troubleshooting process, not one after the other, to avoid overwhelming the customer. -->
+                <div class="mt-4 text-sm italic text-gray-500">
+                    </div>
             `;
             contentDiv.appendChild(card);
             
             const nextSteps = document.createElement('div');
             nextSteps.className = "mt-8 text-center text-gray-600";
             nextSteps.innerHTML = `
-                <p class="font-bold text-xl mb-2">Next Steps:</p>
-                <p>After asking these questions, you'll have all the information you need to confidently recommend a solution and do the troubleshooting necessary.</p>
+                <p class="font-bold text-xl mb-2">${getTranslation('nextStepsTitle')}</p>
+                <p>${getTranslation('nextStepsText')}</p>
             `;
             contentDiv.appendChild(nextSteps);
             
             backButton.classList.remove('hidden');
             homeButton.classList.remove('hidden');
+            backButton.textContent = getTranslation('backButton');
+            homeButton.textContent = getTranslation('homeButton');
         }
 
         backButton.onclick = () => {
@@ -400,12 +645,31 @@
             renderProductCategories();
         };
 
+        languageSwitcher.addEventListener('change', (event) => {
+            currentLanguage = event.target.value;
+            renderProductCategories();
+        });
+
         // Initial render
         document.addEventListener('DOMContentLoaded', () => {
             renderProductCategories();
         });
     </script>
+  <script>
+        // Disable the right-click context menu
+        document.addEventListener('contextmenu', event => event.preventDefault());
+
+        // Disable common developer tool and view-source shortcuts
+        document.addEventListener('keydown', function (event) {
+            // F12, Ctrl+Shift+I, Ctrl+Shift+C (for Chrome/Edge)
+            if (event.key === 'F12' || (event.ctrlKey && event.shiftKey && (event.key === 'I' || event.key === 'C'))) {
+                event.preventDefault();
+            }
+            // Ctrl+U (for View Source)
+            if (event.ctrlKey && event.key === 'u') {
+                event.preventDefault();
+            }
+        });
+    </script>
 </body>
 </html>
-
-
